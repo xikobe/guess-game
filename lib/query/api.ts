@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.NODE_ENV.includes('dev') ? 'http://localhost:4000/dev' : 'https://hgqcgarw0d.execute-api.eu-north-1.amazonaws.com/dev'; // Adjust this based on your Serverless configuration
+const API_BASE_URL = process.env.NODE_ENV.includes('dev')
+    ? 'http://localhost:4000/dev'
+    : 'https://f4s9nne1je.execute-api.eu-north-1.amazonaws.com/dev'; // Adjust this based on your Serverless configuration
 
 export async function submitGuess(username: string, guess: string) {
     const response = await fetch(`${API_BASE_URL}/guess`, {

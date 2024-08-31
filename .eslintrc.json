@@ -1,7 +1,4 @@
 {
-  "extends": []
-}
-{
   "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": [
@@ -19,5 +16,6 @@
   "rules": {
     "no-console": 1,       // Means warning
     "prettier/prettier": 2 // Means error
-  }
+  },
+  "ignorePatterns": ["components/ui/*"]
 }

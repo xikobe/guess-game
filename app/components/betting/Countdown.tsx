@@ -1,9 +1,9 @@
-import { fetchStatus } from '@/app/query/api';
+'use client';
+
+import { fetchStatus } from '@/lib/query/api';
 import { useGameLoopContext } from '@/app/shared/contexts/GameLoopContext';
 import { useUser } from '@/app/shared/hooks/useUser';
 import { useState, useEffect } from 'react';
-
-
 
 export const Countdown = (): JSX.Element => {
     const { resolveBet } = useGameLoopContext();
@@ -18,13 +18,12 @@ export const Countdown = (): JSX.Element => {
                 const response = await fetchStatus(currentUser);
 
                 setGuessTime(response.guessTime);
-                
             } catch (error) {
                 console.error('Error fetching betting status:', error);
             }
         };
 
-        if(!!currentUser) fetchBettingStatus();
+        if (currentUser) fetchBettingStatus();
     }, [currentUser]);
 
     useEffect(() => {

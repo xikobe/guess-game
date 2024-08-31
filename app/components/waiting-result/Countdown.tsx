@@ -1,9 +1,10 @@
 'use client';
 
-import { fetchStatus } from '@/lib/query/api';
+import { fetchStatus } from '@/lib/api';
 import { useGameLoopContext } from '@/app/shared/contexts/GameLoopContext';
 import { useUser } from '@/app/shared/hooks/useUser';
 import { useState, useEffect } from 'react';
+import { Progress } from '@/components/ui/progress';
 
 export const Countdown = (): JSX.Element => {
     const { resolveBet } = useGameLoopContext();
@@ -53,7 +54,10 @@ export const Countdown = (): JSX.Element => {
     return (
         <div>
             {secondsLeft !== null && (
-                <p>{`Time left to resolve the bet: ${secondsLeft} seconds`}</p>
+                <>
+                    <Progress value={(secondsLeft / 60) * 100} />
+                    <p>{`Result in: ${secondsLeft} seconds`}</p>
+                </>
             )}
         </div>
     );

@@ -1,4 +1,4 @@
-import { fetchStatus } from '@/lib/query/api';
+import { fetchStatus } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from './useUser';
 

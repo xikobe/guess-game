@@ -2,36 +2,24 @@
 
 import { useUser } from '@/app/shared/hooks/useUser';
 import { Button } from '@/components/ui/button';
-// import { useBTCPrice } from '../btc-price/hooks/useBTCPrice';
-import {
-    GAME_STEP,
-    useGameLoopContext,
-} from '@/app/shared/contexts/GameLoopContext';
-import { Countdown } from './Countdown';
+import { Loader2 } from 'lucide-react';
+import { useGameLoopContext } from '@/app/shared/contexts/GameLoopContext';
+import { useState } from 'react';
 
 export const Betting = (): JSX.Element => {
     const { currentUser, currentScore } = useUser();
-    // const { data: btcPrice } = useBTCPrice();
-    const { step, makeBet } = useGameLoopContext();
+    const { makeBet } = useGameLoopContext();
+    const [isLoading, setIsLoading] = useState({ up: false, down: false });
 
     async function handleOnClick(guess: 'up' | 'down') {
-        makeBet(guess);
-    }
-
-    if (step === GAME_STEP.WAIT_RESULT) {
-        return (
-            <div>
-                {/* <p className="text-2xl mb-2">You're betting the the price will be {
-          currentGuess === 'up' ? <span className="font-extrabold text-green-500">higher</span> : <span className="font-extrabold text-red-500">lower</span>
-        } than <span className="font-extrabold">${currentBetPrice}</span>!</p> */}
-                <Countdown />
-            </div>
-        );
+        setIsLoading({ ...isLoading, [guess]: true });
+        await makeBet(guess);
+        setIsLoading({ ...isLoading, [guess]: false });
     }
 
     return (
         <div className="flex-col">
-            <div className="mb-4">
+            <div className="mb-8">
                 <p className="text-4xl">
                     Hello {currentUser}, your score is:{' '}
                     <span className="text-purple-800 font-extrabold">
@@ -39,21 +27,30 @@ export const Betting = (): JSX.Element => {
                     </span>{' '}
                 </p>
             </div>
+            <div className="mb-4">
+                <p className="text-4xl">{"What's your bet?"}</p>
+            </div>
             <div className="flex">
                 <div className="mr-8">
                     <Button
                         className="bg-green-500 hover:bg-green-400"
                         onClick={() => handleOnClick('up')}
                     >
-                        Go up
+                        {isLoading.up ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : null}
+                        To the moon 🚀
                     </Button>
                 </div>
                 <div>
                     <Button
-                        variant="destructive"
+                        className="bg-red-500 hover:bg-red-400"
                         onClick={() => handleOnClick('down')}
                     >
-                        Go down
+                        {isLoading.down ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : null}
+                        Going down 🍔
                     </Button>
                 </div>
             </div>

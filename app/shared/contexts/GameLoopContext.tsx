@@ -2,9 +2,9 @@
 
 import { useEffect, createContext, useState, useContext } from 'react';
 import { QueryClient } from '@tanstack/react-query';
-import { useUser } from '../hooks/useUser';
+import { USE_USER_QUERY_KEY, useUser } from '../hooks/useUser';
 import { useBTCPrice } from '@/app/components/btc-price/hooks/useBTCPrice';
-import { resolveGuess, submitGuess } from '@/lib/query/api';
+import { resolveGuess, submitGuess } from '@/lib/api';
 
 const queryClient = new QueryClient();
 
@@ -21,7 +21,9 @@ type GameLoopContextProps = {
     step: Step;
     setStep: (step: Step) => void;
     makeBet: (guess: 'up' | 'down') => void;
+    betWon: boolean | null;
     resolveBet: () => void;
+    restart: () => void;
 };
 
 const GameLoopContext = createContext<GameLoopContextProps>(
@@ -36,8 +38,9 @@ type GameLoopProviderProps = {
 
 const GameLoopProvider = ({ children }: GameLoopProviderProps) => {
     const [isLoaded, setIsLoaded] = useState(false);
+    const [betWon, setIsBetWon] = useState<boolean | null>(null);
     const [step, setStep] = useState<GAME_STEP | null>();
-    const { currentUser } = useUser();
+    const { currentUser, currentScore } = useUser();
     const { data: btcPrice } = useBTCPrice();
 
     const makeBet = async (guess: 'up' | 'down') => {
@@ -46,9 +49,16 @@ const GameLoopProvider = ({ children }: GameLoopProviderProps) => {
         setStep(GAME_STEP.WAIT_RESULT);
     };
 
+    const restart = () => {
+        setStep(GAME_STEP.WAIT_BET);
+    };
+
     const resolveBet = async () => {
-        const QUERY_KEY = 'user_score';
-        await resolveGuess(currentUser);
+        const QUERY_KEY = USE_USER_QUERY_KEY;
+        const response = await resolveGuess(currentUser);
+
+        setIsBetWon(response.user.score > currentScore);
+
         queryClient.removeQueries({ queryKey: [QUERY_KEY] });
 
         setStep(GAME_STEP.SHOW_RESULT);
@@ -65,7 +75,7 @@ const GameLoopProvider = ({ children }: GameLoopProviderProps) => {
 
     const checkInProgressBet = async () => {
         const bet = await resolveGuess(currentUser);
-        if (!bet.inProgress) {
+        if (!bet.inProgress && step !== GAME_STEP.SHOW_RESULT) {
             setStep(GAME_STEP.WAIT_BET);
         } else {
             setStep(GAME_STEP.WAIT_RESULT);
@@ -74,7 +84,7 @@ const GameLoopProvider = ({ children }: GameLoopProviderProps) => {
     };
 
     useEffect(() => {
-        if (btcPrice) {
+        if (btcPrice && !step) {
             checkUser();
         }
     }, [btcPrice, currentUser]);
@@ -85,7 +95,15 @@ const GameLoopProvider = ({ children }: GameLoopProviderProps) => {
 
     return (
         <GameLoopContext.Provider
-            value={{ step, setStep, isLoading: !isLoaded, makeBet, resolveBet }}
+            value={{
+                betWon,
+                step,
+                setStep,
+                isLoading: !isLoaded,
+                makeBet,
+                resolveBet,
+                restart,
+            }}
         >
             {children}
         </GameLoopContext.Provider>

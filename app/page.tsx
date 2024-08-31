@@ -8,6 +8,8 @@ import {
     GAME_STEP,
     useGameLoopContext,
 } from './shared/contexts/GameLoopContext';
+import { WaitingResult } from './components/waiting-result/WaitingResult';
+import { ShowResult } from './components/show-result/ShowResult';
 
 export default function Home() {
     const { setCurrentUser } = useUser();
@@ -30,9 +32,10 @@ export default function Home() {
             </div>
             {step === GAME_STEP.WAIT_USER ? (
                 <UserForm onSubmit={handleOnSetUser} />
-            ) : (
-                <Betting />
-            )}
+            ) : null}
+            {step === GAME_STEP.WAIT_BET ? <Betting /> : null}
+            {step === GAME_STEP.WAIT_RESULT ? <WaitingResult /> : null}
+            {step === GAME_STEP.SHOW_RESULT ? <ShowResult /> : null}
         </main>
     );
 }

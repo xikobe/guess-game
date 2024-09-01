@@ -15,14 +15,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { formSchema } from './schema';
 import { useState } from 'react';
-import { useUser } from '@/app/shared/hooks/useUser';
 
 type UserFormProps = {
     onSubmit: (user: string) => void;
 };
 
 export function UserForm({ onSubmit }: UserFormProps) {
-    const { currentUser } = useUser();
     const [isUserFormVisible, setIsUserFormVisible] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -40,20 +38,16 @@ export function UserForm({ onSubmit }: UserFormProps) {
         setIsUserFormVisible(true);
     }
 
-    if (currentUser) {
-        <h3>Welcome {currentUser}</h3>;
-    }
-
     if (!isUserFormVisible) {
         return (
-            <div>
+            <div data-testid="wait-user">
                 <Button onClick={handleShowUserForm}>Sign up to play</Button>
             </div>
         );
     }
 
     return (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-4" data-testid="wait-user">
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(handleOnSubmit)}

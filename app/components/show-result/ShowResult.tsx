@@ -7,7 +7,7 @@ export const ShowResult = () => {
     const { currentScore } = useUser();
 
     return (
-        <div>
+        <div data-testid="show-result">
             <div>
                 <p className="text-4xl font-black mb-8">
                     {betWon

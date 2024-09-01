@@ -9,7 +9,7 @@ export const WaitingResult = (): JSX.Element | null => {
     }
 
     return (
-        <div>
+        <div data-testid="wait-result">
             <p className="text-2xl mb-4">
                 {"You're betting the the price will be "}
                 {currentGuess === 'up' ? (

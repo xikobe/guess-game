@@ -90,7 +90,7 @@ const GameLoopProvider = ({ children }: GameLoopProviderProps) => {
     }, [btcPrice, currentUser]);
 
     if (!isLoaded) {
-        return 'Loading dudes...';
+        return 'Loading ...';
     }
 
     return (

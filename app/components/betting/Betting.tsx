@@ -18,7 +18,7 @@ export const Betting = (): JSX.Element => {
     }
 
     return (
-        <div className="flex-col">
+        <div className="flex-col" data-testid="betting">
             <div className="mb-8">
                 <p className="text-4xl">
                     Hello {currentUser}, your score is:{' '}
